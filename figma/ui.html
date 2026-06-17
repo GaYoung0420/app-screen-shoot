@@ -230,7 +230,8 @@
       }
 
       .setting-control div,
-      .number-field {
+      .number-field,
+      .range-summary {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -238,12 +239,16 @@
       }
 
       .setting-control span,
-      .number-field span {
+      .number-field span,
+      .range-summary span,
+      .time-fields span,
+      .range-sliders span {
         color: #55645f;
         font-size: 12px;
       }
 
-      .setting-control strong {
+      .setting-control strong,
+      .range-summary strong {
         color: #17201d;
         font-size: 12px;
       }
@@ -261,6 +266,51 @@
         border-radius: 8px;
         padding: 0 9px;
         color: #17201d;
+      }
+
+      .time-fields {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .time-fields label,
+      .range-sliders label {
+        display: grid;
+        gap: 6px;
+      }
+
+      .time-fields input {
+        width: 100%;
+        height: 32px;
+        border: 1px solid #d6e1de;
+        border-radius: 8px;
+        padding: 0 9px;
+        color: #17201d;
+      }
+
+      .range-sliders {
+        display: grid;
+        gap: 9px;
+      }
+
+      .range-sliders input[type="range"] {
+        width: 100%;
+        min-width: 0;
+        accent-color: #0f8f7e;
+      }
+
+      .mini-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 32px;
+        border: 1px solid #dbe5e2;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #23302c;
+        font-size: 12px;
+        font-weight: 700;
       }
 
       .status-card {
@@ -679,6 +729,42 @@
 
             <div class="section">
               <div class="section-title">
+                <span aria-hidden="true">✂</span>
+                <h2>캡쳐 구간</h2>
+              </div>
+
+              <div class="range-summary">
+                <span>선택 구간</span>
+                <strong id="rangeSummary">비디오 업로드 후 설정</strong>
+              </div>
+
+              <div class="time-fields">
+                <label>
+                  <span>시작</span>
+                  <input id="rangeStart" type="number" min="0" max="0" step="0.1" value="0.0" disabled />
+                </label>
+                <label>
+                  <span>끝</span>
+                  <input id="rangeEnd" type="number" min="0" max="0" step="0.1" value="0.0" disabled />
+                </label>
+              </div>
+
+              <div class="range-sliders">
+                <label>
+                  <span>시작 위치</span>
+                  <input id="rangeStartSlider" type="range" min="0" max="0" step="0.1" value="0" disabled />
+                </label>
+                <label>
+                  <span>끝 위치</span>
+                  <input id="rangeEndSlider" type="range" min="0" max="0" step="0.1" value="0" disabled />
+                </label>
+              </div>
+
+              <button class="mini-button" id="fullRangeButton" type="button" disabled>전체 구간</button>
+            </div>
+
+            <div class="section">
+              <div class="section-title">
                 <span aria-hidden="true">⚙</span>
                 <h2>추출 설정</h2>
               </div>
@@ -795,10 +881,14 @@
         maxCaptures: 80,
       };
 
+      const MIN_CAPTURE_RANGE_SECONDS = 0.1;
+
       const state = {
         file: null,
         videoUrl: "",
         videoSize: null,
+        videoDuration: 0,
+        captureRange: { start: 0, end: 0 },
         captures: [],
         selectedIds: [],
         status: "idle",
@@ -829,6 +919,12 @@
         minGap: document.getElementById("minGap"),
         minGapValue: document.getElementById("minGapValue"),
         maxCaptures: document.getElementById("maxCaptures"),
+        rangeSummary: document.getElementById("rangeSummary"),
+        rangeStart: document.getElementById("rangeStart"),
+        rangeEnd: document.getElementById("rangeEnd"),
+        rangeStartSlider: document.getElementById("rangeStartSlider"),
+        rangeEndSlider: document.getElementById("rangeEndSlider"),
+        fullRangeButton: document.getElementById("fullRangeButton"),
         statusDot: document.getElementById("statusDot"),
         message: document.getElementById("message"),
         progressBar: document.getElementById("progressBar"),
@@ -854,6 +950,30 @@
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+      };
+
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+      const normalizeCaptureRange = (range, duration) => {
+        if (!Number.isFinite(duration) || duration <= 0) {
+          return { start: 0, end: 0 };
+        }
+
+        const minRange = Math.min(MIN_CAPTURE_RANGE_SECONDS, duration);
+        let start = clamp(Number(range.start) || 0, 0, Math.max(0, duration - minRange));
+        let end = Number(range.end);
+        end = Number.isFinite(end) && end > 0 ? end : duration;
+        end = clamp(end, minRange, duration);
+
+        if (end - start < minRange) {
+          if (start + minRange <= duration) {
+            end = start + minRange;
+          } else {
+            start = Math.max(0, end - minRange);
+          }
+        }
+
+        return { start, end };
       };
 
       const fileSize = (bytes) => {
@@ -901,6 +1021,8 @@
         const hasFile = Boolean(state.file);
         const hasCaptures = state.captures.length > 0;
         const hasSelected = state.selectedIds.length > 0;
+        const hasDuration = state.videoDuration > 0;
+        const range = normalizeCaptureRange(state.captureRange, state.videoDuration);
 
         dom.fileName.textContent = state.file ? state.file.name : "비디오 업로드";
         dom.fileInfo.textContent = state.file
@@ -916,6 +1038,22 @@
         dom.downloadZipButton.disabled = isProcessing() || !hasSelected;
         dom.clearResultsButton.disabled = isProcessing() || !hasCaptures;
         dom.toggleAllButton.textContent = hasCaptures && state.selectedIds.length === state.captures.length ? "선택 해제" : "전체 선택";
+
+        dom.rangeSummary.textContent = hasDuration
+          ? `${formatTime(range.start)} - ${formatTime(range.end)}`
+          : "비디오 업로드 후 설정";
+        [dom.rangeStart, dom.rangeEnd, dom.rangeStartSlider, dom.rangeEndSlider, dom.fullRangeButton].forEach((control) => {
+          control.disabled = !hasDuration || isProcessing();
+        });
+        dom.rangeStart.max = hasDuration ? range.end.toFixed(1) : "0";
+        dom.rangeEnd.min = hasDuration ? range.start.toFixed(1) : "0";
+        dom.rangeEnd.max = hasDuration ? state.videoDuration.toFixed(1) : "0";
+        dom.rangeStart.value = range.start.toFixed(1);
+        dom.rangeEnd.value = range.end.toFixed(1);
+        dom.rangeStartSlider.max = hasDuration ? state.videoDuration.toFixed(1) : "0";
+        dom.rangeEndSlider.max = hasDuration ? state.videoDuration.toFixed(1) : "0";
+        dom.rangeStartSlider.value = range.start;
+        dom.rangeEndSlider.value = range.end;
       };
 
       const renderTimeline = () => {
@@ -1029,6 +1167,8 @@
         state.file = null;
         state.videoUrl = "";
         state.videoSize = null;
+        state.videoDuration = 0;
+        state.captureRange = { start: 0, end: 0 };
         dom.fileInput.value = "";
         dom.phoneFrame.innerHTML = "";
         setPreviewSize(0, 0);
@@ -1036,6 +1176,33 @@
         dom.emptyPhone.style.display = "grid";
         showView("extract");
         setStatus("idle", "비디오 파일을 업로드하면 주요 화면을 원본 해상도로 찾아냅니다.", 0);
+      };
+
+      const updateCaptureRange = (key, value) => {
+        const numericValue = Number(value);
+        if (!Number.isFinite(numericValue) || state.videoDuration <= 0) return;
+
+        const current = normalizeCaptureRange(state.captureRange, state.videoDuration);
+        const minRange = Math.min(MIN_CAPTURE_RANGE_SECONDS, state.videoDuration);
+        if (key === "start") {
+          state.captureRange = normalizeCaptureRange(
+            {
+              start: clamp(numericValue, 0, Math.max(0, current.end - minRange)),
+              end: current.end,
+            },
+            state.videoDuration,
+          );
+        } else {
+          state.captureRange = normalizeCaptureRange(
+            {
+              start: current.start,
+              end: clamp(numericValue, Math.min(state.videoDuration, current.start + minRange), state.videoDuration),
+            },
+            state.videoDuration,
+          );
+        }
+
+        renderControls();
       };
 
       const handleFile = (nextFile) => {
@@ -1051,6 +1218,8 @@
         state.file = nextFile;
         state.videoUrl = URL.createObjectURL(nextFile);
         state.videoSize = null;
+        state.videoDuration = 0;
+        state.captureRange = { start: 0, end: 0 };
         setPreviewSize(0, 0);
 
         const video = document.createElement("video");
@@ -1063,10 +1232,12 @@
           () => {
             if (!video.videoWidth || !video.videoHeight) return;
             state.videoSize = { width: video.videoWidth, height: video.videoHeight };
+            state.videoDuration = Number.isFinite(video.duration) ? video.duration : 0;
+            state.captureRange = normalizeCaptureRange({ start: 0, end: state.videoDuration }, state.videoDuration);
             setPreviewSize(video.videoWidth, video.videoHeight);
             setStatus(
               "ready",
-              `업로드 완료. ${formatDimensions(video.videoWidth, video.videoHeight)} 원본 해상도로 캡쳐합니다.`,
+              `업로드 완료. ${formatDimensions(video.videoWidth, video.videoHeight)} 원본 해상도에서 전체 구간이 선택되었습니다.`,
               0,
             );
           },
@@ -1182,6 +1353,9 @@
             throw new Error("이 환경에서 비디오 프레임을 읽을 수 없습니다. H.264 MP4로 변환한 뒤 다시 업로드해주세요.");
           }
           state.videoSize = { width, height };
+          state.videoDuration = duration;
+          const range = normalizeCaptureRange(state.captureRange, duration);
+          state.captureRange = range;
           setPreviewSize(width, height);
           renderControls();
 
@@ -1190,13 +1364,14 @@
           canvas.width = width;
           canvas.height = height;
 
-          const totalSamples = Math.max(1, Math.ceil(duration / state.settings.sampleEvery));
+          const rangeDuration = Math.max(MIN_CAPTURE_RANGE_SECONDS, range.end - range.start);
+          const totalSamples = Math.max(1, Math.ceil(rangeDuration / state.settings.sampleEvery));
           const nextCaptures = [];
           let previousSignature = null;
           let lastCaptureTime = -Number.POSITIVE_INFINITY;
 
           for (let sample = 0; sample <= totalSamples; sample += 1) {
-            const time = Math.min(sample * state.settings.sampleEvery, duration);
+            const time = Math.min(range.start + sample * state.settings.sampleEvery, range.end);
             await seekVideo(video, time);
             ctx.drawImage(video, 0, 0, width, height);
 
@@ -1238,8 +1413,8 @@
           setStatus(
             "done",
             nextCaptures.length
-              ? `${nextCaptures.length}개의 화면을 ${formatDimensions(width, height)} 원본 해상도로 찾았습니다. 선택 항목을 Figma에 배치할 수 있습니다.`
-              : "화면을 찾지 못했습니다. 민감도를 낮추거나 샘플 간격을 줄여보세요.",
+              ? `${formatTime(range.start)}-${formatTime(range.end)} 구간에서 ${nextCaptures.length}개의 화면을 ${formatDimensions(width, height)} 원본 해상도로 찾았습니다.`
+              : "선택한 구간에서 화면을 찾지 못했습니다. 구간을 넓히거나 민감도를 낮춰보세요.",
             100,
           );
           renderResults();
@@ -1464,6 +1639,14 @@
       dom.maxCaptures.addEventListener("change", (event) => {
         state.settings.maxCaptures = Math.min(200, Math.max(5, Number(event.target.value) || DEFAULT_SETTINGS.maxCaptures));
         event.target.value = state.settings.maxCaptures;
+      });
+      dom.rangeStart.addEventListener("change", (event) => updateCaptureRange("start", event.target.value));
+      dom.rangeEnd.addEventListener("change", (event) => updateCaptureRange("end", event.target.value));
+      dom.rangeStartSlider.addEventListener("input", (event) => updateCaptureRange("start", event.target.value));
+      dom.rangeEndSlider.addEventListener("input", (event) => updateCaptureRange("end", event.target.value));
+      dom.fullRangeButton.addEventListener("click", () => {
+        state.captureRange = normalizeCaptureRange({ start: 0, end: state.videoDuration }, state.videoDuration);
+        renderControls();
       });
 
       window.onmessage = (event) => {
