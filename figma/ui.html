@@ -230,8 +230,7 @@
       }
 
       .setting-control div,
-      .number-field,
-      .range-summary {
+      .number-field {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -239,16 +238,83 @@
       }
 
       .setting-control span,
-      .number-field span,
-      .range-summary span,
-      .time-fields span,
-      .range-sliders span {
+      .number-field span {
         color: #55645f;
         font-size: 12px;
       }
 
-      .setting-control strong,
-      .range-summary strong {
+      .setting-label {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      .info-button {
+        position: relative;
+        display: inline-grid;
+        width: 17px;
+        height: 17px;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid #cbd9d5;
+        border-radius: 999px;
+        background: #fbfdfc;
+        color: #60706b;
+        cursor: help;
+        font-size: 11px;
+        font-weight: 760;
+        line-height: 1;
+        outline: none;
+        padding: 0;
+      }
+
+      .info-button::after {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 50%;
+        z-index: 8;
+        width: 220px;
+        max-width: min(62vw, 240px);
+        padding: 9px 10px;
+        border: 1px solid #dbe5e2;
+        border-radius: 8px;
+        background: #17201d;
+        color: #fbfdfc;
+        box-shadow: 0 12px 24px rgba(16, 37, 32, 0.18);
+        content: attr(data-tooltip);
+        font-size: 11px;
+        font-weight: 560;
+        line-height: 1.45;
+        opacity: 0;
+        pointer-events: none;
+        text-align: left;
+        transform: translate(-16px, -2px);
+        transition:
+          opacity 140ms ease,
+          transform 140ms ease;
+        visibility: hidden;
+      }
+
+      .info-button:hover,
+      .info-button.is-open,
+      .info-button:focus,
+      .info-button:focus-visible {
+        border-color: #0f8f7e;
+        color: #0f8f7e;
+      }
+
+      .info-button:hover::after,
+      .info-button.is-open::after,
+      .info-button:focus::after,
+      .info-button:focus-visible::after {
+        opacity: 1;
+        transform: translate(-16px, 0);
+        visibility: visible;
+      }
+
+      .setting-control strong {
         color: #17201d;
         font-size: 12px;
       }
@@ -266,51 +332,6 @@
         border-radius: 8px;
         padding: 0 9px;
         color: #17201d;
-      }
-
-      .time-fields {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-      }
-
-      .time-fields label,
-      .range-sliders label {
-        display: grid;
-        gap: 6px;
-      }
-
-      .time-fields input {
-        width: 100%;
-        height: 32px;
-        border: 1px solid #d6e1de;
-        border-radius: 8px;
-        padding: 0 9px;
-        color: #17201d;
-      }
-
-      .range-sliders {
-        display: grid;
-        gap: 9px;
-      }
-
-      .range-sliders input[type="range"] {
-        width: 100%;
-        min-width: 0;
-        accent-color: #0f8f7e;
-      }
-
-      .mini-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 32px;
-        border: 1px solid #dbe5e2;
-        border-radius: 8px;
-        background: #ffffff;
-        color: #23302c;
-        font-size: 12px;
-        font-weight: 700;
       }
 
       .status-card {
@@ -377,8 +398,7 @@
 
       .video-stage {
         display: grid;
-        min-height: 500px;
-        height: 500px;
+        min-height: 0;
         place-items: center;
         padding: 16px;
         background:
@@ -437,36 +457,57 @@
         font-size: 12px;
       }
 
+      .analysis-title {
+        display: grid;
+        gap: 2px;
+      }
+
       .analysis-header strong {
         color: #17201d;
       }
 
+      .analysis-title strong {
+        font-size: 13px;
+      }
+
       .timeline-rail {
         position: relative;
-        height: 22px;
-        overflow: hidden;
+        height: 34px;
+        overflow: visible;
         border-radius: 6px;
         background:
           repeating-linear-gradient(90deg, transparent 0 22px, rgba(23, 32, 29, 0.06) 22px 23px),
           #eef4f2;
+        touch-action: none;
       }
 
       .timeline-progress {
         position: absolute;
-        inset: 0 auto 0 0;
+        inset: 6px auto 6px 0;
         border-radius: inherit;
         background: rgba(15, 143, 126, 0.14);
         transition: width 180ms ease;
       }
 
+      .timeline-range {
+        position: absolute;
+        top: 6px;
+        bottom: 6px;
+        border-radius: 6px;
+        background: rgba(15, 143, 126, 0.28);
+        box-shadow: inset 0 0 0 1px rgba(15, 143, 126, 0.22);
+        pointer-events: none;
+      }
+
       .timeline-hit,
       .timeline-ghost {
         position: absolute;
-        top: 5px;
+        top: 11px;
         width: 3px;
         height: 12px;
         border-radius: 99px;
         transform: translateX(-50%);
+        pointer-events: none;
       }
 
       .timeline-hit {
@@ -475,6 +516,66 @@
 
       .timeline-ghost {
         background: rgba(23, 32, 29, 0.12);
+      }
+
+      .timeline-handle {
+        position: absolute;
+        top: 50%;
+        z-index: 3;
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border: 2px solid #0f8f7e;
+        border-radius: 999px;
+        background: #fbfdfc;
+        color: #0f8f7e;
+        box-shadow: 0 7px 14px rgba(16, 37, 32, 0.16);
+        transform: translate(-50%, -50%);
+      }
+
+      .timeline-handle::after {
+        width: 4px;
+        height: 12px;
+        border-radius: 999px;
+        background: currentColor;
+        content: "";
+      }
+
+      .timeline-handle:disabled {
+        border-color: #c7d0cd;
+        background: #f4f7f6;
+        color: #a2aca8;
+        box-shadow: none;
+      }
+
+      .timeline-handle:focus-visible {
+        outline: 3px solid rgba(15, 143, 126, 0.22);
+        outline-offset: 2px;
+      }
+
+      .timeline-time-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 8px;
+        color: #60706b;
+        font-size: 11px;
+      }
+
+      .timeline-time-row span:last-child {
+        text-align: right;
+      }
+
+      .timeline-reset-button {
+        min-height: 28px;
+        border: 1px solid #dbe5e2;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #23302c;
+        padding: 0 10px;
+        font-size: 11px;
+        font-weight: 700;
       }
 
       .summary-strip {
@@ -683,8 +784,6 @@
         }
 
         .video-stage {
-          height: 280px;
-          min-height: 280px;
           padding: 14px;
         }
 
@@ -729,74 +828,70 @@
 
             <div class="section">
               <div class="section-title">
-                <span aria-hidden="true">✂</span>
-                <h2>캡쳐 구간</h2>
-              </div>
-
-              <div class="range-summary">
-                <span>선택 구간</span>
-                <strong id="rangeSummary">비디오 업로드 후 설정</strong>
-              </div>
-
-              <div class="time-fields">
-                <label>
-                  <span>시작</span>
-                  <input id="rangeStart" type="number" min="0" max="0" step="0.1" value="0.0" disabled />
-                </label>
-                <label>
-                  <span>끝</span>
-                  <input id="rangeEnd" type="number" min="0" max="0" step="0.1" value="0.0" disabled />
-                </label>
-              </div>
-
-              <div class="range-sliders">
-                <label>
-                  <span>시작 위치</span>
-                  <input id="rangeStartSlider" type="range" min="0" max="0" step="0.1" value="0" disabled />
-                </label>
-                <label>
-                  <span>끝 위치</span>
-                  <input id="rangeEndSlider" type="range" min="0" max="0" step="0.1" value="0" disabled />
-                </label>
-              </div>
-
-              <button class="mini-button" id="fullRangeButton" type="button" disabled>전체 구간</button>
-            </div>
-
-            <div class="section">
-              <div class="section-title">
                 <span aria-hidden="true">⚙</span>
                 <h2>추출 설정</h2>
               </div>
 
-              <label class="setting-control">
+              <div class="setting-control">
                 <div>
-                  <span>샘플 간격</span>
+                  <span class="setting-label">
+                    <span>샘플 간격</span>
+                    <button
+                      class="info-button"
+                      type="button"
+                      aria-label="샘플 간격 설명"
+                      data-tooltip="동영상을 몇 초마다 한 번씩 확인할지 정합니다. 값이 작을수록 더 촘촘히 분석하지만 처리 시간이 길어집니다."
+                    >i</button>
+                  </span>
                   <strong id="sampleEveryValue">0.75초</strong>
                 </div>
-                <input id="sampleEvery" type="range" min="0.25" max="2" step="0.25" value="0.75" />
-              </label>
+                <input id="sampleEvery" type="range" min="0.25" max="2" step="0.25" value="0.75" aria-label="샘플 간격" />
+              </div>
 
-              <label class="setting-control">
+              <div class="setting-control">
                 <div>
-                  <span>화면 변화 민감도</span>
+                  <span class="setting-label">
+                    <span>화면 변화 민감도</span>
+                    <button
+                      class="info-button"
+                      type="button"
+                      aria-label="화면 변화 민감도 설명"
+                      data-tooltip="이전 화면과 얼마나 달라야 새 화면으로 저장할지 정합니다. 낮추면 작은 변화도 캡쳐하고, 높이면 큰 전환만 캡쳐합니다."
+                    >i</button>
+                  </span>
                   <strong id="diffThresholdValue">18</strong>
                 </div>
-                <input id="diffThreshold" type="range" min="6" max="40" step="1" value="18" />
-              </label>
+                <input id="diffThreshold" type="range" min="6" max="40" step="1" value="18" aria-label="화면 변화 민감도" />
+              </div>
 
-              <label class="setting-control">
+              <div class="setting-control">
                 <div>
-                  <span>최소 캡쳐 간격</span>
+                  <span class="setting-label">
+                    <span>최소 캡쳐 간격</span>
+                    <button
+                      class="info-button"
+                      type="button"
+                      aria-label="최소 캡쳐 간격 설명"
+                      data-tooltip="한 장을 저장한 뒤 다음 장을 저장하기까지 최소로 띄울 시간입니다. 비슷한 순간이 연속 저장되는 것을 줄입니다."
+                    >i</button>
+                  </span>
                   <strong id="minGapValue">1.1초</strong>
                 </div>
-                <input id="minGap" type="range" min="0.5" max="4" step="0.1" value="1.1" />
-              </label>
+                <input id="minGap" type="range" min="0.5" max="4" step="0.1" value="1.1" aria-label="최소 캡쳐 간격" />
+              </div>
 
-              <label class="number-field">
-                <span>최대 캡쳐 수</span>
-                <input id="maxCaptures" type="number" min="5" max="200" value="80" />
-              </label>
+              <div class="number-field">
+                <span class="setting-label">
+                  <span>최대 캡쳐 수</span>
+                  <button
+                    class="info-button"
+                    type="button"
+                    aria-label="최대 캡쳐 수 설명"
+                    data-tooltip="한 번의 추출에서 저장할 최대 이미지 수입니다. 긴 영상이나 민감한 설정에서 결과가 너무 많아지는 것을 제한합니다."
+                  >i</button>
+                </span>
+                <input id="maxCaptures" type="number" min="5" max="200" value="80" aria-label="최대 캡쳐 수" />
+              </div>
             </div>
 
             <div class="status-card">
@@ -822,11 +917,22 @@
 
             <div class="analysis-strip" aria-label="화면 분석 타임라인">
               <div class="analysis-header">
-                <span>화면 분석 타임라인</span>
+                <div class="analysis-title">
+                  <span>화면 분석 타임라인</span>
+                  <strong id="rangeSummary">비디오 업로드 후 설정</strong>
+                </div>
                 <strong id="analysisState">대기 중</strong>
               </div>
               <div class="timeline-rail" id="timelineRail">
                 <div class="timeline-progress" id="timelineProgress"></div>
+                <div class="timeline-range" id="timelineRange"></div>
+                <button class="timeline-handle" id="rangeStartHandle" type="button" aria-label="시작 시간" disabled></button>
+                <button class="timeline-handle" id="rangeEndHandle" type="button" aria-label="끝 시간" disabled></button>
+              </div>
+              <div class="timeline-time-row">
+                <span id="timelineStartTime">00:00</span>
+                <button class="timeline-reset-button" id="fullRangeButton" type="button" disabled>전체 구간</button>
+                <span id="timelineEndTime">00:00</span>
               </div>
             </div>
 
@@ -901,6 +1007,7 @@
           maxCaptures: DEFAULT_SETTINGS.maxCaptures,
         },
         dragActive: false,
+        draggingRangeEdge: null,
       };
 
       const dom = {
@@ -920,10 +1027,6 @@
         minGapValue: document.getElementById("minGapValue"),
         maxCaptures: document.getElementById("maxCaptures"),
         rangeSummary: document.getElementById("rangeSummary"),
-        rangeStart: document.getElementById("rangeStart"),
-        rangeEnd: document.getElementById("rangeEnd"),
-        rangeStartSlider: document.getElementById("rangeStartSlider"),
-        rangeEndSlider: document.getElementById("rangeEndSlider"),
         fullRangeButton: document.getElementById("fullRangeButton"),
         statusDot: document.getElementById("statusDot"),
         message: document.getElementById("message"),
@@ -933,6 +1036,11 @@
         analysisState: document.getElementById("analysisState"),
         timelineRail: document.getElementById("timelineRail"),
         timelineProgress: document.getElementById("timelineProgress"),
+        timelineRange: document.getElementById("timelineRange"),
+        rangeStartHandle: document.getElementById("rangeStartHandle"),
+        rangeEndHandle: document.getElementById("rangeEndHandle"),
+        timelineStartTime: document.getElementById("timelineStartTime"),
+        timelineEndTime: document.getElementById("timelineEndTime"),
         captureCount: document.getElementById("captureCount"),
         firstCapture: document.getElementById("firstCapture"),
         lastCapture: document.getElementById("lastCapture"),
@@ -1042,18 +1150,18 @@
         dom.rangeSummary.textContent = hasDuration
           ? `${formatTime(range.start)} - ${formatTime(range.end)}`
           : "비디오 업로드 후 설정";
-        [dom.rangeStart, dom.rangeEnd, dom.rangeStartSlider, dom.rangeEndSlider, dom.fullRangeButton].forEach((control) => {
+        [dom.rangeStartHandle, dom.rangeEndHandle, dom.fullRangeButton].forEach((control) => {
           control.disabled = !hasDuration || isProcessing();
         });
-        dom.rangeStart.max = hasDuration ? range.end.toFixed(1) : "0";
-        dom.rangeEnd.min = hasDuration ? range.start.toFixed(1) : "0";
-        dom.rangeEnd.max = hasDuration ? state.videoDuration.toFixed(1) : "0";
-        dom.rangeStart.value = range.start.toFixed(1);
-        dom.rangeEnd.value = range.end.toFixed(1);
-        dom.rangeStartSlider.max = hasDuration ? state.videoDuration.toFixed(1) : "0";
-        dom.rangeEndSlider.max = hasDuration ? state.videoDuration.toFixed(1) : "0";
-        dom.rangeStartSlider.value = range.start;
-        dom.rangeEndSlider.value = range.end;
+
+        const startPercent = hasDuration ? (range.start / state.videoDuration) * 100 : 0;
+        const endPercent = hasDuration ? (range.end / state.videoDuration) * 100 : 100;
+        dom.timelineRange.style.left = `${startPercent}%`;
+        dom.timelineRange.style.width = `${Math.max(0, endPercent - startPercent)}%`;
+        dom.rangeStartHandle.style.left = `${startPercent}%`;
+        dom.rangeEndHandle.style.left = `${endPercent}%`;
+        dom.timelineStartTime.textContent = hasDuration ? formatTime(range.start) : "00:00";
+        dom.timelineEndTime.textContent = hasDuration ? formatTime(range.end) : "00:00";
       };
 
       const renderTimeline = () => {
@@ -1063,7 +1171,10 @@
           state.captures.slice(0, 36).forEach((capture, index) => {
             const hit = document.createElement("span");
             hit.className = "timeline-hit";
-            hit.style.left = `${Math.min(98, Math.max(2, (index / Math.max(state.captures.length - 1, 1)) * 96 + 2))}%`;
+            const position = state.videoDuration
+              ? (capture.time / state.videoDuration) * 100
+              : (index / Math.max(state.captures.length - 1, 1)) * 100;
+            hit.style.left = `${Math.min(100, Math.max(0, position))}%`;
             dom.timelineRail.appendChild(hit);
           });
           return;
@@ -1169,6 +1280,7 @@
         state.videoSize = null;
         state.videoDuration = 0;
         state.captureRange = { start: 0, end: 0 };
+        state.draggingRangeEdge = null;
         dom.fileInput.value = "";
         dom.phoneFrame.innerHTML = "";
         setPreviewSize(0, 0);
@@ -1205,6 +1317,42 @@
         renderControls();
       };
 
+      const getTimelineTime = (event) => {
+        const rect = dom.timelineRail.getBoundingClientRect();
+        const position = clamp((event.clientX - rect.left) / Math.max(1, rect.width), 0, 1);
+        return position * state.videoDuration;
+      };
+
+      const updateNearestRangeEdge = (time) => {
+        const range = normalizeCaptureRange(state.captureRange, state.videoDuration);
+        const edge = Math.abs(time - range.start) <= Math.abs(time - range.end) ? "start" : "end";
+        updateCaptureRange(edge, time);
+      };
+
+      const beginTimelineDrag = (edge, event) => {
+        if (state.videoDuration <= 0 || isProcessing()) return;
+        event.preventDefault();
+        state.draggingRangeEdge = edge;
+        updateCaptureRange(edge, getTimelineTime(event));
+      };
+
+      const handleTimelineKeydown = (edge, event) => {
+        if (state.videoDuration <= 0 || isProcessing()) return;
+        const range = normalizeCaptureRange(state.captureRange, state.videoDuration);
+        const step = event.shiftKey ? 5 : 0.5;
+        const current = edge === "start" ? range.start : range.end;
+        let nextValue = current;
+
+        if (event.key === "ArrowLeft") nextValue = current - step;
+        else if (event.key === "ArrowRight") nextValue = current + step;
+        else if (event.key === "Home") nextValue = 0;
+        else if (event.key === "End") nextValue = state.videoDuration;
+        else return;
+
+        event.preventDefault();
+        updateCaptureRange(edge, nextValue);
+      };
+
       const handleFile = (nextFile) => {
         if (!nextFile) return;
         if (!nextFile.type.startsWith("video/")) {
@@ -1220,6 +1368,7 @@
         state.videoSize = null;
         state.videoDuration = 0;
         state.captureRange = { start: 0, end: 0 };
+        state.draggingRangeEdge = null;
         setPreviewSize(0, 0);
 
         const video = document.createElement("video");
@@ -1640,10 +1789,41 @@
         state.settings.maxCaptures = Math.min(200, Math.max(5, Number(event.target.value) || DEFAULT_SETTINGS.maxCaptures));
         event.target.value = state.settings.maxCaptures;
       });
-      dom.rangeStart.addEventListener("change", (event) => updateCaptureRange("start", event.target.value));
-      dom.rangeEnd.addEventListener("change", (event) => updateCaptureRange("end", event.target.value));
-      dom.rangeStartSlider.addEventListener("input", (event) => updateCaptureRange("start", event.target.value));
-      dom.rangeEndSlider.addEventListener("input", (event) => updateCaptureRange("end", event.target.value));
+      document.querySelectorAll(".info-button").forEach((button) => {
+        const open = () => button.classList.add("is-open");
+        const close = () => button.classList.remove("is-open");
+        button.addEventListener("mouseenter", open);
+        button.addEventListener("mouseleave", close);
+        button.addEventListener("focus", open);
+        button.addEventListener("blur", close);
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          document.querySelectorAll(".info-button.is-open").forEach((current) => {
+            if (current !== button) current.classList.remove("is-open");
+          });
+          button.classList.add("is-open");
+        });
+      });
+      document.addEventListener("click", (event) => {
+        if (event.target.closest(".info-button")) return;
+        document.querySelectorAll(".info-button.is-open").forEach((button) => button.classList.remove("is-open"));
+      });
+      dom.timelineRail.addEventListener("pointerdown", (event) => {
+        if (event.target === dom.rangeStartHandle || event.target === dom.rangeEndHandle) return;
+        if (state.videoDuration <= 0 || isProcessing()) return;
+        updateNearestRangeEdge(getTimelineTime(event));
+      });
+      dom.rangeStartHandle.addEventListener("pointerdown", (event) => beginTimelineDrag("start", event));
+      dom.rangeEndHandle.addEventListener("pointerdown", (event) => beginTimelineDrag("end", event));
+      dom.rangeStartHandle.addEventListener("keydown", (event) => handleTimelineKeydown("start", event));
+      dom.rangeEndHandle.addEventListener("keydown", (event) => handleTimelineKeydown("end", event));
+      document.addEventListener("pointermove", (event) => {
+        if (!state.draggingRangeEdge) return;
+        updateCaptureRange(state.draggingRangeEdge, getTimelineTime(event));
+      });
+      document.addEventListener("pointerup", () => {
+        state.draggingRangeEdge = null;
+      });
       dom.fullRangeButton.addEventListener("click", () => {
         state.captureRange = normalizeCaptureRange({ start: 0, end: state.videoDuration }, state.videoDuration);
         renderControls();
