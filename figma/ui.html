@@ -1,0 +1,1481 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>App Screen Shot</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f7f8f7;
+        color: #17201d;
+        font-synthesis: none;
+        text-rendering: geometricPrecision;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background:
+          linear-gradient(180deg, rgba(32, 163, 141, 0.08), transparent 240px),
+          #f7f8f7;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.54;
+      }
+
+      .app-shell {
+        min-height: 100vh;
+        padding: 16px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+
+      .brand {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid #cfe5df;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #0f8f7e;
+        box-shadow: 0 10px 28px rgba(12, 36, 31, 0.08);
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 760;
+        letter-spacing: 0;
+      }
+
+      .brand p {
+        margin: 3px 0 0;
+        color: #60706b;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .primary-button,
+      .ghost-button,
+      .danger-button {
+        display: inline-flex;
+        min-height: 38px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 0 13px;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .primary-button {
+        background: #0f8f7e;
+        color: #ffffff;
+        box-shadow: 0 10px 22px rgba(15, 143, 126, 0.2);
+      }
+
+      .ghost-button {
+        border-color: #dbe5e2;
+        background: #ffffff;
+        color: #23302c;
+      }
+
+      .danger-button {
+        border-color: #f0d0cd;
+        background: #fff8f7;
+        color: #b84639;
+      }
+
+      .main-grid {
+        display: grid;
+        grid-template-columns: 300px minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+      }
+
+      .view {
+        display: none;
+      }
+
+      .view.is-active {
+        display: block;
+      }
+
+      .panel {
+        min-width: 0;
+        border: 1px solid #dde8e5;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow: 0 18px 50px rgba(16, 37, 32, 0.08);
+      }
+
+      .control-panel {
+        display: grid;
+        gap: 12px;
+        padding: 12px;
+      }
+
+      .upload-zone {
+        display: flex;
+        width: 100%;
+        min-height: 118px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border: 1.5px dashed #9fcac1;
+        border-radius: 8px;
+        background: #f8fcfb;
+        color: #0f8f7e;
+        text-align: center;
+        transition:
+          border-color 160ms ease,
+          background 160ms ease,
+          transform 160ms ease;
+      }
+
+      .upload-zone:hover,
+      .upload-zone.is-dragging {
+        border-color: #0f8f7e;
+        background: #effaf7;
+        transform: translateY(-1px);
+      }
+
+      .upload-zone input {
+        display: none;
+      }
+
+      .upload-zone strong {
+        width: 100%;
+        max-width: 250px;
+        overflow: hidden;
+        color: #17201d;
+        font-size: 15px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .upload-zone span {
+        max-width: 240px;
+        color: #65736f;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .section {
+        display: grid;
+        gap: 11px;
+        padding: 12px;
+        border: 1px solid #e4ece9;
+        border-radius: 8px;
+      }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .section-title h2 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 760;
+      }
+
+      .setting-control {
+        display: grid;
+        gap: 6px;
+      }
+
+      .setting-control div,
+      .number-field {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .setting-control span,
+      .number-field span {
+        color: #55645f;
+        font-size: 12px;
+      }
+
+      .setting-control strong {
+        color: #17201d;
+        font-size: 12px;
+      }
+
+      .setting-control input[type="range"] {
+        width: 100%;
+        min-width: 0;
+        accent-color: #0f8f7e;
+      }
+
+      .number-field input {
+        width: 84px;
+        height: 32px;
+        border: 1px solid #d6e1de;
+        border-radius: 8px;
+        padding: 0 9px;
+        color: #17201d;
+      }
+
+      .status-card {
+        display: grid;
+        gap: 9px;
+        padding: 11px;
+        border: 1px solid #e4ece9;
+        border-radius: 8px;
+        background: #fbfdfc;
+      }
+
+      .status-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        color: #475751;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .status-dot {
+        width: 9px;
+        height: 9px;
+        flex: 0 0 auto;
+        margin-top: 4px;
+        border-radius: 999px;
+        background: #a3b2ae;
+      }
+
+      .status-dot.ready,
+      .status-dot.done {
+        background: #0f8f7e;
+      }
+
+      .status-dot.processing,
+      .status-dot.zipping,
+      .status-dot.importing {
+        background: #e75d4f;
+      }
+
+      .status-dot.error {
+        background: #c8332a;
+      }
+
+      .progress-track {
+        height: 8px;
+        overflow: hidden;
+        border-radius: 99px;
+        background: #e6eeeb;
+      }
+
+      .progress-track div {
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #0f8f7e, #e75d4f);
+        transition: width 180ms ease;
+      }
+
+      .preview-panel {
+        display: grid;
+        overflow: hidden;
+      }
+
+      .video-stage {
+        display: grid;
+        min-height: 500px;
+        height: 500px;
+        place-items: center;
+        padding: 16px;
+        background:
+          linear-gradient(135deg, rgba(15, 143, 126, 0.12), transparent 45%),
+          repeating-linear-gradient(90deg, rgba(23, 32, 29, 0.04) 0 1px, transparent 1px 58px),
+          #f2f6f4;
+      }
+
+      .video-frame {
+        --preview-width: 680px;
+        --preview-ratio: 16 / 9;
+        display: grid;
+        width: min(var(--preview-width), 100%);
+        aspect-ratio: var(--preview-ratio);
+        overflow: hidden;
+        place-items: center;
+        border: 1px solid #17201d;
+        border-radius: 8px;
+        background: #0e1513;
+        box-shadow: 0 26px 50px rgba(14, 21, 19, 0.24);
+      }
+
+      .video-frame video {
+        width: 100%;
+        height: 100%;
+        background: #0e1513;
+        object-fit: contain;
+      }
+
+      .empty-video {
+        display: grid;
+        place-items: center;
+        gap: 10px;
+        color: #9fb0aa;
+        font-size: 13px;
+      }
+
+      .analysis-strip,
+      .summary-strip {
+        border-top: 1px solid #dde8e5;
+        background: #ffffff;
+      }
+
+      .analysis-strip {
+        display: grid;
+        gap: 8px;
+        padding: 10px 12px 12px;
+      }
+
+      .analysis-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: #60706b;
+        font-size: 12px;
+      }
+
+      .analysis-header strong {
+        color: #17201d;
+      }
+
+      .timeline-rail {
+        position: relative;
+        height: 22px;
+        overflow: hidden;
+        border-radius: 6px;
+        background:
+          repeating-linear-gradient(90deg, transparent 0 22px, rgba(23, 32, 29, 0.06) 22px 23px),
+          #eef4f2;
+      }
+
+      .timeline-progress {
+        position: absolute;
+        inset: 0 auto 0 0;
+        border-radius: inherit;
+        background: rgba(15, 143, 126, 0.14);
+        transition: width 180ms ease;
+      }
+
+      .timeline-hit,
+      .timeline-ghost {
+        position: absolute;
+        top: 5px;
+        width: 3px;
+        height: 12px;
+        border-radius: 99px;
+        transform: translateX(-50%);
+      }
+
+      .timeline-hit {
+        background: #0f8f7e;
+      }
+
+      .timeline-ghost {
+        background: rgba(23, 32, 29, 0.12);
+      }
+
+      .summary-strip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+      }
+
+      .summary-item {
+        display: grid;
+        min-width: 110px;
+        gap: 2px;
+        padding: 8px 10px;
+        border: 1px solid #e4ece9;
+        border-radius: 8px;
+      }
+
+      .summary-item span {
+        color: #687672;
+        font-size: 11px;
+      }
+
+      .summary-item strong {
+        color: #17201d;
+        font-size: 14px;
+      }
+
+      .results-panel {
+        padding: 16px;
+      }
+
+      .results-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+
+      .results-header h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 760;
+      }
+
+      .results-header p {
+        margin: 4px 0 0;
+        color: #667570;
+        font-size: 12px;
+      }
+
+      .results-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .capture-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
+        gap: 12px;
+      }
+
+      .capture-card {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #dde8e5;
+        border-radius: 8px;
+        background: #ffffff;
+        transition:
+          border-color 140ms ease,
+          box-shadow 140ms ease,
+          transform 140ms ease;
+      }
+
+      .capture-card.is-selected {
+        border-color: #0f8f7e;
+        box-shadow: 0 0 0 2px rgba(15, 143, 126, 0.14);
+      }
+
+      .capture-card:hover {
+        transform: translateY(-1px);
+      }
+
+      .select-toggle {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 2;
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border: 1px solid rgba(15, 143, 126, 0.38);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        color: #7a8884;
+        box-shadow: 0 8px 16px rgba(16, 37, 32, 0.12);
+      }
+
+      .capture-card.is-selected .select-toggle {
+        background: #0f8f7e;
+        color: #ffffff;
+      }
+
+      .capture-image {
+        display: grid;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        place-items: center;
+        border: 0;
+        padding: 0;
+        background: #eef3f1;
+      }
+
+      .capture-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .capture-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 9px;
+      }
+
+      .capture-meta div {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+
+      .capture-meta strong {
+        font-size: 13px;
+      }
+
+      .capture-meta span {
+        color: #687672;
+        font-size: 11px;
+      }
+
+      .icon-button {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border: 1px solid #d9e4e1;
+        border-radius: 8px;
+        background: #f8fbfa;
+        color: #0f8f7e;
+      }
+
+      .empty-results {
+        display: grid;
+        min-height: 210px;
+        place-items: center;
+        align-content: center;
+        gap: 10px;
+        border: 1px dashed #cbd9d5;
+        border-radius: 8px;
+        color: #687672;
+        text-align: center;
+      }
+
+      .empty-results strong {
+        color: #17201d;
+      }
+
+      .empty-results span {
+        max-width: 340px;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 760px) {
+        .app-shell {
+          padding: 14px;
+        }
+
+        .topbar,
+        .main-grid,
+        .results-header {
+          grid-template-columns: 1fr;
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .main-grid {
+          display: grid;
+        }
+
+        .actions,
+        .results-actions {
+          justify-content: stretch;
+        }
+
+        .actions button,
+        .results-actions button {
+          flex: 1;
+        }
+
+        .video-stage {
+          height: 280px;
+          min-height: 280px;
+          padding: 14px;
+        }
+
+        .video-frame {
+          width: min(var(--preview-width), 100%);
+        }
+
+        .summary-strip {
+          flex-wrap: wrap;
+        }
+
+        .summary-item {
+          flex: 1 1 130px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">✂</div>
+          <div>
+            <h1>App Screen Shot</h1>
+            <p>비디오 화면 녹화에서 화면 단위 스크린샷을 원본 해상도로 추출합니다.</p>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="ghost-button" id="resetButton" type="button" disabled>초기화</button>
+          <button class="primary-button" id="extractButton" type="button">비디오 선택</button>
+        </div>
+      </header>
+
+      <section class="view is-active" id="extractView">
+        <section class="main-grid">
+          <aside class="panel control-panel">
+            <button class="upload-zone" id="uploadZone" type="button">
+              <input id="fileInput" type="file" accept="video/*" />
+              <strong id="fileName">비디오 업로드</strong>
+              <span id="fileInfo">MP4, MOV, WebM 파일을 끌어오거나 선택</span>
+            </button>
+
+            <div class="section">
+              <div class="section-title">
+                <span aria-hidden="true">⚙</span>
+                <h2>추출 설정</h2>
+              </div>
+
+              <label class="setting-control">
+                <div>
+                  <span>샘플 간격</span>
+                  <strong id="sampleEveryValue">0.75초</strong>
+                </div>
+                <input id="sampleEvery" type="range" min="0.25" max="2" step="0.25" value="0.75" />
+              </label>
+
+              <label class="setting-control">
+                <div>
+                  <span>화면 변화 민감도</span>
+                  <strong id="diffThresholdValue">18</strong>
+                </div>
+                <input id="diffThreshold" type="range" min="6" max="40" step="1" value="18" />
+              </label>
+
+              <label class="setting-control">
+                <div>
+                  <span>최소 캡쳐 간격</span>
+                  <strong id="minGapValue">1.1초</strong>
+                </div>
+                <input id="minGap" type="range" min="0.5" max="4" step="0.1" value="1.1" />
+              </label>
+
+              <label class="number-field">
+                <span>최대 캡쳐 수</span>
+                <input id="maxCaptures" type="number" min="5" max="200" value="80" />
+              </label>
+            </div>
+
+            <div class="status-card">
+              <div class="status-row">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="message">비디오 파일을 업로드하면 주요 화면을 원본 해상도로 찾아냅니다.</span>
+              </div>
+              <div class="progress-track" aria-label="처리 진행률">
+                <div id="progressBar"></div>
+              </div>
+            </div>
+          </aside>
+
+          <section class="panel preview-panel">
+            <div class="video-stage">
+              <div class="video-frame" id="phoneFrame">
+                <div class="empty-video" id="emptyPhone">
+                  <span>▯</span>
+                  <span>비디오 미리보기</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="analysis-strip" aria-label="화면 분석 타임라인">
+              <div class="analysis-header">
+                <span>화면 분석 타임라인</span>
+                <strong id="analysisState">대기 중</strong>
+              </div>
+              <div class="timeline-rail" id="timelineRail">
+                <div class="timeline-progress" id="timelineProgress"></div>
+              </div>
+            </div>
+
+            <div class="summary-strip">
+              <div class="summary-item">
+                <span>캡쳐 화면</span>
+                <strong id="captureCount">0개</strong>
+              </div>
+              <div class="summary-item">
+                <span>첫 화면</span>
+                <strong id="firstCapture">-</strong>
+              </div>
+              <div class="summary-item">
+                <span>마지막 화면</span>
+                <strong id="lastCapture">-</strong>
+              </div>
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <section class="view" id="resultsView">
+        <section class="panel results-panel">
+          <div class="results-header">
+            <div>
+              <h2>추출 결과</h2>
+              <p id="resultSummary">원본 해상도로 자동 캡쳐된 화면을 선택해서 Figma에 배치하거나 PNG로 받을 수 있습니다.</p>
+            </div>
+            <div class="results-actions">
+              <button class="ghost-button" id="backToExtractButton" type="button">추출 화면</button>
+              <button class="primary-button" id="importSelectedButton" type="button" disabled>Figma 배치</button>
+              <button class="ghost-button" id="toggleAllButton" type="button" disabled>전체 선택</button>
+              <button class="ghost-button" id="downloadZipButton" type="button" disabled>선택 ZIP</button>
+              <button class="danger-button" id="clearResultsButton" type="button" disabled>결과 지우기</button>
+            </div>
+          </div>
+          <div id="resultsBody">
+            <div class="empty-results">
+              <strong>아직 추출된 화면이 없습니다.</strong>
+              <span>비디오를 업로드하고 추출을 시작하면 원본 해상도 PNG가 여기에 쌓입니다.</span>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const DEFAULT_SETTINGS = {
+        sampleEvery: 0.75,
+        diffThreshold: 18,
+        minGap: 1.1,
+        maxCaptures: 80,
+      };
+
+      const state = {
+        file: null,
+        videoUrl: "",
+        videoSize: null,
+        captures: [],
+        selectedIds: [],
+        status: "idle",
+        progress: 0,
+        view: "extract",
+        settings: {
+          sampleEvery: DEFAULT_SETTINGS.sampleEvery,
+          diffThreshold: DEFAULT_SETTINGS.diffThreshold,
+          minGap: DEFAULT_SETTINGS.minGap,
+          maxCaptures: DEFAULT_SETTINGS.maxCaptures,
+        },
+        dragActive: false,
+      };
+
+      const dom = {
+        extractView: document.getElementById("extractView"),
+        resultsView: document.getElementById("resultsView"),
+        uploadZone: document.getElementById("uploadZone"),
+        fileInput: document.getElementById("fileInput"),
+        fileName: document.getElementById("fileName"),
+        fileInfo: document.getElementById("fileInfo"),
+        resetButton: document.getElementById("resetButton"),
+        extractButton: document.getElementById("extractButton"),
+        sampleEvery: document.getElementById("sampleEvery"),
+        sampleEveryValue: document.getElementById("sampleEveryValue"),
+        diffThreshold: document.getElementById("diffThreshold"),
+        diffThresholdValue: document.getElementById("diffThresholdValue"),
+        minGap: document.getElementById("minGap"),
+        minGapValue: document.getElementById("minGapValue"),
+        maxCaptures: document.getElementById("maxCaptures"),
+        statusDot: document.getElementById("statusDot"),
+        message: document.getElementById("message"),
+        progressBar: document.getElementById("progressBar"),
+        phoneFrame: document.getElementById("phoneFrame"),
+        emptyPhone: document.getElementById("emptyPhone"),
+        analysisState: document.getElementById("analysisState"),
+        timelineRail: document.getElementById("timelineRail"),
+        timelineProgress: document.getElementById("timelineProgress"),
+        captureCount: document.getElementById("captureCount"),
+        firstCapture: document.getElementById("firstCapture"),
+        lastCapture: document.getElementById("lastCapture"),
+        importSelectedButton: document.getElementById("importSelectedButton"),
+        resultSummary: document.getElementById("resultSummary"),
+        backToExtractButton: document.getElementById("backToExtractButton"),
+        toggleAllButton: document.getElementById("toggleAllButton"),
+        downloadZipButton: document.getElementById("downloadZipButton"),
+        clearResultsButton: document.getElementById("clearResultsButton"),
+        resultsBody: document.getElementById("resultsBody"),
+      };
+
+      const formatTime = (seconds) => {
+        if (!Number.isFinite(seconds)) return "00:00";
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+      };
+
+      const fileSize = (bytes) => {
+        if (!bytes) return "0 MB";
+        const mb = bytes / 1024 / 1024;
+        return `${mb.toFixed(mb >= 10 ? 1 : 2)} MB`;
+      };
+
+      const formatDimensions = (width, height) => `${Math.round(width)}x${Math.round(height)}`;
+
+      const setPreviewSize = (width, height) => {
+        if (!width || !height) {
+          dom.phoneFrame.style.removeProperty("--preview-width");
+          dom.phoneFrame.style.removeProperty("--preview-ratio");
+          return;
+        }
+
+        const ratio = width / height;
+        const maxPreviewWidth = 680;
+        const maxPreviewHeight = 420;
+        const previewWidth = Math.min(maxPreviewWidth, Math.max(1, Math.round(maxPreviewHeight * ratio)));
+        dom.phoneFrame.style.setProperty("--preview-width", `${previewWidth}px`);
+        dom.phoneFrame.style.setProperty("--preview-ratio", `${width} / ${height}`);
+      };
+
+      const setStatus = (status, message, progress = state.progress) => {
+        state.status = status;
+        state.progress = progress;
+        dom.statusDot.className = `status-dot ${status}`;
+        dom.message.textContent = message;
+        dom.progressBar.style.width = `${progress}%`;
+        dom.timelineProgress.style.width = `${progress}%`;
+        renderControls();
+      };
+
+      const isProcessing = () => ["processing", "zipping", "importing"].includes(state.status);
+
+      const showView = (view) => {
+        state.view = view;
+        dom.extractView.classList.toggle("is-active", view === "extract");
+        dom.resultsView.classList.toggle("is-active", view === "results");
+      };
+
+      const renderControls = () => {
+        const hasFile = Boolean(state.file);
+        const hasCaptures = state.captures.length > 0;
+        const hasSelected = state.selectedIds.length > 0;
+
+        dom.fileName.textContent = state.file ? state.file.name : "비디오 업로드";
+        dom.fileInfo.textContent = state.file
+          ? `${fileSize(state.file.size)} · ${state.file.type || "video"}${
+              state.videoSize ? ` · ${formatDimensions(state.videoSize.width, state.videoSize.height)}` : ""
+            }`
+          : "MP4, MOV, WebM 파일을 끌어오거나 선택";
+        dom.extractButton.textContent = hasFile ? (isProcessing() ? "처리 중" : "추출 시작") : "비디오 선택";
+        dom.extractButton.disabled = isProcessing();
+        dom.resetButton.disabled = isProcessing() || (!hasFile && !hasCaptures);
+        dom.importSelectedButton.disabled = isProcessing() || !hasSelected;
+        dom.toggleAllButton.disabled = isProcessing() || !hasCaptures;
+        dom.downloadZipButton.disabled = isProcessing() || !hasSelected;
+        dom.clearResultsButton.disabled = isProcessing() || !hasCaptures;
+        dom.toggleAllButton.textContent = hasCaptures && state.selectedIds.length === state.captures.length ? "선택 해제" : "전체 선택";
+      };
+
+      const renderTimeline = () => {
+        dom.timelineRail.querySelectorAll(".timeline-hit, .timeline-ghost").forEach((node) => node.remove());
+
+        if (state.captures.length) {
+          state.captures.slice(0, 36).forEach((capture, index) => {
+            const hit = document.createElement("span");
+            hit.className = "timeline-hit";
+            hit.style.left = `${Math.min(98, Math.max(2, (index / Math.max(state.captures.length - 1, 1)) * 96 + 2))}%`;
+            dom.timelineRail.appendChild(hit);
+          });
+          return;
+        }
+
+        Array.from({ length: 18 }, (_, index) => {
+          const ghost = document.createElement("span");
+          ghost.className = "timeline-ghost";
+          ghost.style.left = `${6 + index * 5.1}%`;
+          dom.timelineRail.appendChild(ghost);
+        });
+      };
+
+      const renderResults = () => {
+        const captures = state.captures;
+        const selectedCount = state.selectedIds.length;
+
+        dom.captureCount.textContent = `${captures.length}개`;
+        dom.firstCapture.textContent = captures[0] ? formatTime(captures[0].time) : "-";
+        dom.lastCapture.textContent = captures[captures.length - 1] ? formatTime(captures[captures.length - 1].time) : "-";
+        dom.analysisState.textContent = isProcessing()
+          ? `${state.progress}%`
+          : captures.length
+            ? `${captures.length}개 감지`
+            : "대기 중";
+        const captureSize = captures[0] ? ` · ${formatDimensions(captures[0].width, captures[0].height)}` : "";
+        dom.resultSummary.textContent = captures.length
+          ? `${selectedCount}/${captures.length}개 선택됨${captureSize}. 선택 항목을 원본 크기로 Figma에 배치하거나 ZIP으로 받을 수 있습니다.`
+          : "원본 해상도로 자동 캡쳐된 화면을 선택해서 Figma에 배치하거나 PNG로 받을 수 있습니다.";
+
+        renderTimeline();
+        renderControls();
+
+        if (!captures.length) {
+          dom.resultsBody.innerHTML = `
+            <div class="empty-results">
+              <strong>아직 추출된 화면이 없습니다.</strong>
+              <span>비디오를 업로드하고 추출을 시작하면 원본 해상도 PNG가 여기에 쌓입니다.</span>
+            </div>
+          `;
+          return;
+        }
+
+        const grid = document.createElement("div");
+        grid.className = "capture-grid";
+
+        captures.forEach((capture, index) => {
+          const selected = state.selectedIds.includes(capture.id);
+          const card = document.createElement("article");
+          card.className = `capture-card ${selected ? "is-selected" : ""}`;
+
+          const selectButton = document.createElement("button");
+          selectButton.className = "select-toggle";
+          selectButton.type = "button";
+          selectButton.setAttribute("aria-pressed", String(selected));
+          selectButton.textContent = "✓";
+          selectButton.addEventListener("click", () => toggleCapture(capture.id));
+
+          const imageButton = document.createElement("button");
+          imageButton.className = "capture-image";
+          imageButton.type = "button";
+          imageButton.style.aspectRatio = `${capture.width} / ${capture.height}`;
+          imageButton.addEventListener("click", () => toggleCapture(capture.id));
+
+          const img = document.createElement("img");
+          img.src = capture.url;
+          img.alt = `${index + 1}번째 캡쳐 화면`;
+          imageButton.appendChild(img);
+
+          const meta = document.createElement("div");
+          meta.className = "capture-meta";
+          const label = document.createElement("div");
+          label.innerHTML = `<strong>${String(index + 1).padStart(2, "0")}</strong><span>${formatTime(capture.time)}</span>`;
+
+          const download = document.createElement("button");
+          download.className = "icon-button";
+          download.type = "button";
+          download.title = "PNG 다운로드";
+          download.textContent = "↓";
+          download.addEventListener("click", () => downloadOne(capture));
+
+          meta.append(label, download);
+          card.append(selectButton, imageButton, meta);
+          grid.appendChild(card);
+        });
+
+        dom.resultsBody.replaceChildren(grid);
+      };
+
+      const resetResults = () => {
+        state.captures.forEach((capture) => URL.revokeObjectURL(capture.url));
+        state.captures = [];
+        state.selectedIds = [];
+        state.progress = 0;
+        renderResults();
+      };
+
+      const clearAll = () => {
+        resetResults();
+        if (state.videoUrl) URL.revokeObjectURL(state.videoUrl);
+        state.file = null;
+        state.videoUrl = "";
+        state.videoSize = null;
+        dom.fileInput.value = "";
+        dom.phoneFrame.innerHTML = "";
+        setPreviewSize(0, 0);
+        dom.phoneFrame.appendChild(dom.emptyPhone);
+        dom.emptyPhone.style.display = "grid";
+        showView("extract");
+        setStatus("idle", "비디오 파일을 업로드하면 주요 화면을 원본 해상도로 찾아냅니다.", 0);
+      };
+
+      const handleFile = (nextFile) => {
+        if (!nextFile) return;
+        if (!nextFile.type.startsWith("video/")) {
+          setStatus("error", "MP4, MOV, WebM 같은 비디오 파일을 선택해주세요.", 0);
+          return;
+        }
+
+        resetResults();
+        showView("extract");
+        if (state.videoUrl) URL.revokeObjectURL(state.videoUrl);
+        state.file = nextFile;
+        state.videoUrl = URL.createObjectURL(nextFile);
+        state.videoSize = null;
+        setPreviewSize(0, 0);
+
+        const video = document.createElement("video");
+        video.src = state.videoUrl;
+        video.controls = true;
+        video.playsInline = true;
+        video.preload = "metadata";
+        video.addEventListener(
+          "loadedmetadata",
+          () => {
+            if (!video.videoWidth || !video.videoHeight) return;
+            state.videoSize = { width: video.videoWidth, height: video.videoHeight };
+            setPreviewSize(video.videoWidth, video.videoHeight);
+            setStatus(
+              "ready",
+              `업로드 완료. ${formatDimensions(video.videoWidth, video.videoHeight)} 원본 해상도로 캡쳐합니다.`,
+              0,
+            );
+          },
+          { once: true },
+        );
+        dom.emptyPhone.style.display = "none";
+        dom.phoneFrame.replaceChildren(video);
+
+        setStatus("ready", "업로드 완료. 비디오 해상도를 읽는 중입니다.", 0);
+      };
+
+      const seekVideo = (video, time) =>
+        new Promise((resolve, reject) => {
+          const cleanup = () => {
+            video.removeEventListener("seeked", onSeeked);
+            video.removeEventListener("error", onError);
+          };
+          const onSeeked = () => {
+            cleanup();
+            resolve();
+          };
+          const onError = () => {
+            cleanup();
+            reject(new Error("비디오를 읽는 중 문제가 발생했습니다."));
+          };
+
+          video.addEventListener("seeked", onSeeked, { once: true });
+          video.addEventListener("error", onError, { once: true });
+          video.currentTime = Math.min(Math.max(time, 0), Math.max(video.duration - 0.05, 0));
+        });
+
+      const waitForMetadata = (video) =>
+        new Promise((resolve, reject) => {
+          if (video.readyState >= 1 && Number.isFinite(video.duration)) {
+            resolve();
+            return;
+          }
+
+          const cleanup = () => {
+            video.removeEventListener("loadedmetadata", onLoaded);
+            video.removeEventListener("error", onError);
+          };
+          const onLoaded = () => {
+            cleanup();
+            resolve();
+          };
+          const onError = () => {
+            cleanup();
+            reject(new Error("비디오 메타데이터를 읽을 수 없습니다."));
+          };
+
+          video.addEventListener("loadedmetadata", onLoaded, { once: true });
+          video.addEventListener("error", onError, { once: true });
+        });
+
+      const getFrameSignature = (canvas) => {
+        const size = 32;
+        const sampleCanvas = document.createElement("canvas");
+        const sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
+        sampleCanvas.width = size;
+        sampleCanvas.height = size;
+        sampleCtx.drawImage(canvas, 0, 0, size, size);
+        const { data } = sampleCtx.getImageData(0, 0, size, size);
+        const signature = new Uint8Array(size * size);
+
+        for (let index = 0, pixel = 0; index < data.length; index += 4, pixel += 1) {
+          signature[pixel] = Math.round(data[index] * 0.299 + data[index + 1] * 0.587 + data[index + 2] * 0.114);
+        }
+
+        return signature;
+      };
+
+      const getSignatureDiff = (left, right) => {
+        if (!left || !right || left.length !== right.length) return Number.POSITIVE_INFINITY;
+        let total = 0;
+        for (let index = 0; index < left.length; index += 1) {
+          total += Math.abs(left[index] - right[index]);
+        }
+        return total / left.length;
+      };
+
+      const canvasToBlob = (canvas) =>
+        new Promise((resolve, reject) => {
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error("이미지를 생성할 수 없습니다."));
+          }, "image/png");
+        });
+
+      const extractScreens = async () => {
+        if (!state.file || !state.videoUrl) {
+          dom.fileInput.click();
+          return;
+        }
+
+        resetResults();
+        showView("extract");
+        setStatus("processing", "비디오 프레임을 원본 해상도로 읽고 중복 화면을 걸러내는 중입니다.", 0);
+
+        const video = document.createElement("video");
+        video.src = state.videoUrl;
+        video.muted = true;
+        video.preload = "metadata";
+        video.playsInline = true;
+
+        try {
+          await waitForMetadata(video);
+
+          const width = video.videoWidth;
+          const height = video.videoHeight;
+          const duration = video.duration;
+          if (!width || !height) {
+            throw new Error("이 환경에서 비디오 프레임을 읽을 수 없습니다. H.264 MP4로 변환한 뒤 다시 업로드해주세요.");
+          }
+          state.videoSize = { width, height };
+          setPreviewSize(width, height);
+          renderControls();
+
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          canvas.width = width;
+          canvas.height = height;
+
+          const totalSamples = Math.max(1, Math.ceil(duration / state.settings.sampleEvery));
+          const nextCaptures = [];
+          let previousSignature = null;
+          let lastCaptureTime = -Number.POSITIVE_INFINITY;
+
+          for (let sample = 0; sample <= totalSamples; sample += 1) {
+            const time = Math.min(sample * state.settings.sampleEvery, duration);
+            await seekVideo(video, time);
+            ctx.drawImage(video, 0, 0, width, height);
+
+            const signature = getFrameSignature(canvas);
+            const diff = getSignatureDiff(previousSignature, signature);
+            const hasEnoughGap = time - lastCaptureTime >= state.settings.minGap;
+            const shouldCapture =
+              sample === 0 ||
+              (diff >= state.settings.diffThreshold && hasEnoughGap && nextCaptures.length < state.settings.maxCaptures);
+
+            if (shouldCapture) {
+              const blob = await canvasToBlob(canvas);
+              const url = URL.createObjectURL(blob);
+              nextCaptures.push({
+                id: `${time.toFixed(2)}-${nextCaptures.length}`,
+                blob,
+                diff: Number.isFinite(diff) ? diff : 0,
+                time,
+                url,
+                width,
+                height,
+                name: `screen-${String(nextCaptures.length + 1).padStart(2, "0")}-${formatTime(time).replace(":", "m")}s.png`,
+              });
+              lastCaptureTime = time;
+              previousSignature = signature;
+            } else if (!previousSignature || diff >= state.settings.diffThreshold * 0.55) {
+              previousSignature = signature;
+            }
+
+            state.progress = Math.round((sample / totalSamples) * 100);
+            dom.progressBar.style.width = `${state.progress}%`;
+            dom.timelineProgress.style.width = `${state.progress}%`;
+            dom.analysisState.textContent = `${state.progress}%`;
+            await new Promise((resolve) => setTimeout(resolve, 0));
+          }
+
+          state.captures = nextCaptures;
+          state.selectedIds = nextCaptures.map((capture) => capture.id);
+          setStatus(
+            "done",
+            nextCaptures.length
+              ? `${nextCaptures.length}개의 화면을 ${formatDimensions(width, height)} 원본 해상도로 찾았습니다. 선택 항목을 Figma에 배치할 수 있습니다.`
+              : "화면을 찾지 못했습니다. 민감도를 낮추거나 샘플 간격을 줄여보세요.",
+            100,
+          );
+          renderResults();
+          showView("results");
+        } catch (error) {
+          setStatus("error", error.message || "처리 중 오류가 발생했습니다.", state.progress);
+        }
+      };
+
+      const selectedCaptures = () => state.captures.filter((capture) => state.selectedIds.includes(capture.id));
+
+      const toggleCapture = (id) => {
+        state.selectedIds = state.selectedIds.includes(id)
+          ? state.selectedIds.filter((selectedId) => selectedId !== id)
+          : state.selectedIds.concat([id]);
+        renderResults();
+      };
+
+      const toggleAllCaptures = () => {
+        state.selectedIds = state.selectedIds.length === state.captures.length ? [] : state.captures.map((capture) => capture.id);
+        renderResults();
+      };
+
+      const downloadOne = (capture) => {
+        const link = document.createElement("a");
+        link.href = capture.url;
+        link.download = capture.name;
+        link.click();
+      };
+
+      const crcTable = (() => {
+        const table = new Uint32Array(256);
+        for (let n = 0; n < 256; n += 1) {
+          let c = n;
+          for (let k = 0; k < 8; k += 1) {
+            c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+          }
+          table[n] = c >>> 0;
+        }
+        return table;
+      })();
+
+      const crc32 = (bytes) => {
+        let crc = 0xffffffff;
+        for (let index = 0; index < bytes.length; index += 1) {
+          crc = crcTable[(crc ^ bytes[index]) & 0xff] ^ (crc >>> 8);
+        }
+        return (crc ^ 0xffffffff) >>> 0;
+      };
+
+      const writeUint16 = (view, offset, value) => {
+        view.setUint16(offset, value, true);
+      };
+
+      const writeUint32 = (view, offset, value) => {
+        view.setUint32(offset, value >>> 0, true);
+      };
+
+      const dosDateTime = (date) => ({
+        time: (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2),
+        date: ((date.getFullYear() - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate(),
+      });
+
+      const concatBytes = (parts) => {
+        const total = parts.reduce((sum, part) => sum + part.length, 0);
+        const output = new Uint8Array(total);
+        let offset = 0;
+        parts.forEach((part) => {
+          output.set(part, offset);
+          offset += part.length;
+        });
+        return output;
+      };
+
+      const createZip = async (items) => {
+        const encoder = new TextEncoder();
+        const now = dosDateTime(new Date());
+        const localParts = [];
+        const centralParts = [];
+        let offset = 0;
+
+        for (const item of items) {
+          const data = new Uint8Array(await item.blob.arrayBuffer());
+          const name = encoder.encode(item.name);
+          const crc = crc32(data);
+
+          const local = new Uint8Array(30 + name.length);
+          const localView = new DataView(local.buffer);
+          writeUint32(localView, 0, 0x04034b50);
+          writeUint16(localView, 4, 20);
+          writeUint16(localView, 6, 0x0800);
+          writeUint16(localView, 8, 0);
+          writeUint16(localView, 10, now.time);
+          writeUint16(localView, 12, now.date);
+          writeUint32(localView, 14, crc);
+          writeUint32(localView, 18, data.length);
+          writeUint32(localView, 22, data.length);
+          writeUint16(localView, 26, name.length);
+          writeUint16(localView, 28, 0);
+          local.set(name, 30);
+          localParts.push(local, data);
+
+          const central = new Uint8Array(46 + name.length);
+          const centralView = new DataView(central.buffer);
+          writeUint32(centralView, 0, 0x02014b50);
+          writeUint16(centralView, 4, 20);
+          writeUint16(centralView, 6, 20);
+          writeUint16(centralView, 8, 0x0800);
+          writeUint16(centralView, 10, 0);
+          writeUint16(centralView, 12, now.time);
+          writeUint16(centralView, 14, now.date);
+          writeUint32(centralView, 16, crc);
+          writeUint32(centralView, 20, data.length);
+          writeUint32(centralView, 24, data.length);
+          writeUint16(centralView, 28, name.length);
+          writeUint16(centralView, 30, 0);
+          writeUint16(centralView, 32, 0);
+          writeUint16(centralView, 34, 0);
+          writeUint16(centralView, 36, 0);
+          writeUint32(centralView, 38, 0);
+          writeUint32(centralView, 42, offset);
+          central.set(name, 46);
+          centralParts.push(central);
+
+          offset += local.length + data.length;
+        }
+
+        const centralBytes = concatBytes(centralParts);
+        const end = new Uint8Array(22);
+        const endView = new DataView(end.buffer);
+        writeUint32(endView, 0, 0x06054b50);
+        writeUint16(endView, 8, items.length);
+        writeUint16(endView, 10, items.length);
+        writeUint32(endView, 12, centralBytes.length);
+        writeUint32(endView, 16, offset);
+        writeUint16(endView, 20, 0);
+
+        return new Blob(localParts.concat([centralBytes, end]), { type: "application/zip" });
+      };
+
+      const downloadZip = async () => {
+        const items = selectedCaptures();
+        if (!items.length) return;
+
+        setStatus("zipping", "ZIP 파일을 준비하는 중입니다.", state.progress);
+        const blob = await createZip(items);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const baseName = state.file?.name?.replace(/\.[^/.]+$/, "") || "app-screens";
+        link.href = url;
+        link.download = `${baseName}-screenshots.zip`;
+        link.click();
+        URL.revokeObjectURL(url);
+        setStatus("done", "ZIP 다운로드가 준비되었습니다.", 100);
+      };
+
+      const importSelectedToFigma = async () => {
+        const items = selectedCaptures();
+        if (!items.length) return;
+
+        setStatus("importing", "선택한 스크린샷을 Figma 캔버스에 배치하는 중입니다.", state.progress);
+        const images = [];
+        for (const item of items) {
+          images.push({
+            name: item.name,
+            time: item.time,
+            width: item.width,
+            height: item.height,
+            bytes: await item.blob.arrayBuffer(),
+          });
+        }
+
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "create-images",
+              sourceName: state.file?.name?.replace(/\.[^/.]+$/, "") || "app",
+              images,
+            },
+          },
+          "*",
+        );
+      };
+
+      dom.uploadZone.addEventListener("click", () => dom.fileInput.click());
+      dom.fileInput.addEventListener("change", (event) => handleFile(event.target.files?.[0]));
+      dom.extractButton.addEventListener("click", extractScreens);
+      dom.resetButton.addEventListener("click", clearAll);
+      dom.backToExtractButton.addEventListener("click", () => showView("extract"));
+      dom.toggleAllButton.addEventListener("click", toggleAllCaptures);
+      dom.downloadZipButton.addEventListener("click", downloadZip);
+      dom.clearResultsButton.addEventListener("click", () => {
+        resetResults();
+        showView("extract");
+      });
+      dom.importSelectedButton.addEventListener("click", importSelectedToFigma);
+
+      dom.uploadZone.addEventListener("dragenter", (event) => {
+        event.preventDefault();
+        dom.uploadZone.classList.add("is-dragging");
+      });
+      dom.uploadZone.addEventListener("dragover", (event) => event.preventDefault());
+      dom.uploadZone.addEventListener("dragleave", () => dom.uploadZone.classList.remove("is-dragging"));
+      dom.uploadZone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        dom.uploadZone.classList.remove("is-dragging");
+        handleFile(event.dataTransfer.files?.[0]);
+      });
+
+      dom.sampleEvery.addEventListener("input", (event) => {
+        state.settings.sampleEvery = Number(event.target.value);
+        dom.sampleEveryValue.textContent = `${state.settings.sampleEvery.toFixed(2)}초`;
+      });
+      dom.diffThreshold.addEventListener("input", (event) => {
+        state.settings.diffThreshold = Number(event.target.value);
+        dom.diffThresholdValue.textContent = String(state.settings.diffThreshold);
+      });
+      dom.minGap.addEventListener("input", (event) => {
+        state.settings.minGap = Number(event.target.value);
+        dom.minGapValue.textContent = `${state.settings.minGap.toFixed(1)}초`;
+      });
+      dom.maxCaptures.addEventListener("change", (event) => {
+        state.settings.maxCaptures = Math.min(200, Math.max(5, Number(event.target.value) || DEFAULT_SETTINGS.maxCaptures));
+        event.target.value = state.settings.maxCaptures;
+      });
+
+      window.onmessage = (event) => {
+        const message = event.data.pluginMessage;
+        if (!message) return;
+        if (message.type === "import-complete") {
+          setStatus("done", `${message.count}개의 스크린샷을 Figma 캔버스에 배치했습니다.`, 100);
+        }
+      };
+
+      renderTimeline();
+      renderControls();
+    </script>
+  </body>
+</html>
