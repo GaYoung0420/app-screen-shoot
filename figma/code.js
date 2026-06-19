@@ -20,10 +20,13 @@ function pad2(value) {
 }
 
 function formatTime(seconds) {
-  if (!Number.isFinite(seconds)) return "00:00";
+  if (!Number.isFinite(seconds)) return "00:00.000";
   var mins = Math.floor(seconds / 60);
   var secs = Math.floor(seconds % 60);
-  return pad2(mins) + ":" + pad2(secs);
+  var millis = Math.floor((seconds % 1) * 1000);
+  var paddedMillis = String(millis);
+  while (paddedMillis.length < 3) paddedMillis = "0" + paddedMillis;
+  return pad2(mins) + ":" + pad2(secs) + "." + paddedMillis;
 }
 
 function screenNumber(index) {
@@ -70,6 +73,7 @@ figma.ui.onmessage = async function (message) {
       index: imageIndex,
       name: source.name,
       time: source.time,
+      note: source.note || "",
       bytes: source.bytes,
       width: sourceWidth,
       height: sourceHeight
@@ -83,7 +87,8 @@ figma.ui.onmessage = async function (message) {
   var boardHeight = PADDING * 2 + totalImageHeight + items.length * LABEL_HEIGHT + Math.max(0, items.length - 1) * GAP;
 
   var board = figma.createFrame();
-  board.name = message.sourceName ? message.sourceName + " screenshots" : "App screenshots";
+  var collectionName = message.collectionName || "screenshots";
+  board.name = message.sourceName ? message.sourceName + " " + collectionName : "App " + collectionName;
   board.resize(boardWidth, boardHeight);
   board.fills = [{ type: "SOLID", color: { r: 0.965, g: 0.98, b: 0.976 } }];
   board.clipsContent = false;
@@ -107,7 +112,7 @@ figma.ui.onmessage = async function (message) {
       label.fontName = { family: "Inter", style: "Medium" };
       label.fontSize = 12;
       label.fills = [{ type: "SOLID", color: { r: 0.09, g: 0.125, b: 0.114 } }];
-      label.characters = screenNumber(item.index) + "  " + formatTime(item.time) + "  " + Math.round(item.width) + "x" + Math.round(item.height);
+      label.characters = screenNumber(item.index) + "  " + formatTime(item.time) + "  " + Math.round(item.width) + "x" + Math.round(item.height) + (item.note ? "  " + item.note.slice(0, 40) : "");
       board.appendChild(label);
       label.x = x;
       label.y = y;
