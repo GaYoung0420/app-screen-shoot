@@ -35,7 +35,9 @@ function screenNumber(index) {
 
 figma.ui.onmessage = async function (message) {
   if (message.type === "resize") {
-    figma.ui.resize(message.width, message.height);
+    var width = Math.min(1400, Math.max(640, Number(message.width) || 980));
+    var height = Math.min(1000, Math.max(520, Number(message.height) || 760));
+    figma.ui.resize(Math.round(width), Math.round(height));
     return;
   }
 

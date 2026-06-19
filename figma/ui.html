@@ -44,7 +44,7 @@
 
       .app-shell {
         min-height: 100vh;
-        padding: 16px;
+        padding: 16px 16px 48px;
       }
 
       .topbar {
@@ -622,6 +622,7 @@
 
       .checkpoint-list {
         display: flex;
+        align-items: flex-start;
         gap: 10px;
         overflow-x: auto;
         padding-bottom: 2px;
@@ -638,8 +639,9 @@
 
       .checkpoint-card {
         display: grid;
-        width: 146px;
-        flex: 0 0 146px;
+        width: 186px;
+        min-width: 0;
+        flex: 0 0 186px;
         gap: 7px;
         padding: 7px;
         border: 1px solid #dce7e4;
@@ -666,20 +668,23 @@
       }
 
       .checkpoint-meta {
-        display: flex;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
-        justify-content: space-between;
         gap: 6px;
       }
 
       .checkpoint-time {
         color: #17201d;
         font-size: 12px;
+        font-variant-numeric: tabular-nums;
         font-weight: 760;
+        white-space: nowrap;
       }
 
       .checkpoint-card input {
         width: 100%;
+        min-width: 0;
         height: 30px;
         border: 1px solid #d9e4e1;
         border-radius: 6px;
@@ -699,7 +704,7 @@
       }
 
       .checkpoint-card-actions button {
-        min-width: 28px;
+        min-width: 40px;
         height: 28px;
         border: 1px solid #d9e4e1;
         border-radius: 6px;
@@ -707,6 +712,9 @@
         color: #0f8f7e;
         font-size: 11px;
         font-weight: 700;
+        line-height: 1;
+        padding: 0 7px;
+        white-space: nowrap;
       }
 
       .checkpoint-card-actions .remove-checkpoint {
@@ -725,6 +733,33 @@
         box-shadow: 0 2px 5px rgba(16, 37, 32, 0.2);
         transform: translateX(-50%);
         pointer-events: none;
+      }
+
+      .resize-handle {
+        position: fixed;
+        right: 8px;
+        bottom: 8px;
+        z-index: 20;
+        min-height: 28px;
+        border: 1px solid #cbd9d5;
+        border-radius: 7px;
+        padding: 0 9px;
+        background: rgba(255, 255, 255, 0.96);
+        color: #52615d;
+        box-shadow: 0 8px 20px rgba(16, 37, 32, 0.12);
+        cursor: nwse-resize;
+        font-size: 11px;
+        font-weight: 700;
+        touch-action: none;
+        user-select: none;
+      }
+
+      .resize-handle:hover,
+      .resize-handle:focus-visible,
+      .resize-handle.is-dragging {
+        border-color: #0f8f7e;
+        color: #0f8f7e;
+        outline: none;
       }
 
       .summary-strip {
@@ -1153,6 +1188,14 @@
       </section>
     </main>
 
+    <button
+      class="resize-handle"
+      id="resizeHandle"
+      type="button"
+      aria-label="플러그인 창 크기 조절"
+      title="드래그해서 창 크기 조절 · 더블클릭해서 기본 크기"
+    >창 크기 조절</button>
+
     <script>
       const DEFAULT_SETTINGS = {
         sampleEvery: 0.75,
@@ -1162,6 +1205,8 @@
       };
 
       const MIN_CAPTURE_RANGE_SECONDS = 0.1;
+      const DEFAULT_WINDOW_SIZE = { width: 980, height: 760 };
+      const WINDOW_SIZE_LIMITS = { minWidth: 640, minHeight: 520, maxWidth: 1400, maxHeight: 1000 };
 
       const state = {
         file: null,
@@ -1183,6 +1228,7 @@
         },
         dragActive: false,
         draggingRangeEdge: null,
+        resizingWindow: null,
       };
 
       const dom = {
@@ -1229,6 +1275,7 @@
         downloadZipButton: document.getElementById("downloadZipButton"),
         clearResultsButton: document.getElementById("clearResultsButton"),
         resultsBody: document.getElementById("resultsBody"),
+        resizeHandle: document.getElementById("resizeHandle"),
       };
 
       const formatTime = (seconds) => {
@@ -2134,13 +2181,44 @@
         if (event.target.closest(".info-button")) return;
         document.querySelectorAll(".info-button.is-open").forEach((button) => button.classList.remove("is-open"));
       });
-      document.addEventListener("keydown", (event) => {
+      const handleCheckpointShortcut = (event) => {
         const target = event.target;
         const isTyping = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
-        if (isTyping || event.metaKey || event.ctrlKey || event.altKey || event.key.toLowerCase() !== "m") return;
+        const isMShortcut = event.code === "KeyM" || String(event.key).toLowerCase() === "m";
+        if (isTyping || event.isComposing || event.repeat || event.metaKey || event.ctrlKey || event.altKey || !isMShortcut) return;
         if (!state.file || isProcessing()) return;
         event.preventDefault();
+        event.stopPropagation();
         addCheckpoint();
+      };
+      window.addEventListener("keydown", handleCheckpointShortcut, true);
+
+      const sendResize = (width, height) => {
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "resize",
+              width: Math.round(clamp(width, WINDOW_SIZE_LIMITS.minWidth, WINDOW_SIZE_LIMITS.maxWidth)),
+              height: Math.round(clamp(height, WINDOW_SIZE_LIMITS.minHeight, WINDOW_SIZE_LIMITS.maxHeight)),
+            },
+          },
+          "*",
+        );
+      };
+
+      dom.resizeHandle.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        dom.resizeHandle.setPointerCapture?.(event.pointerId);
+        dom.resizeHandle.classList.add("is-dragging");
+        state.resizingWindow = {
+          startX: event.clientX,
+          startY: event.clientY,
+          startWidth: window.innerWidth,
+          startHeight: window.innerHeight,
+        };
+      });
+      dom.resizeHandle.addEventListener("dblclick", () => {
+        sendResize(DEFAULT_WINDOW_SIZE.width, DEFAULT_WINDOW_SIZE.height);
       });
       dom.timelineRail.addEventListener("pointerdown", (event) => {
         if (event.target === dom.rangeStartHandle || event.target === dom.rangeEndHandle) return;
@@ -2152,11 +2230,19 @@
       dom.rangeStartHandle.addEventListener("keydown", (event) => handleTimelineKeydown("start", event));
       dom.rangeEndHandle.addEventListener("keydown", (event) => handleTimelineKeydown("end", event));
       document.addEventListener("pointermove", (event) => {
+        if (state.resizingWindow) {
+          sendResize(
+            state.resizingWindow.startWidth + event.clientX - state.resizingWindow.startX,
+            state.resizingWindow.startHeight + event.clientY - state.resizingWindow.startY,
+          );
+        }
         if (!state.draggingRangeEdge) return;
         updateCaptureRange(state.draggingRangeEdge, getTimelineTime(event));
       });
       document.addEventListener("pointerup", () => {
         state.draggingRangeEdge = null;
+        state.resizingWindow = null;
+        dom.resizeHandle.classList.remove("is-dragging");
       });
       dom.fullRangeButton.addEventListener("click", () => {
         state.captureRange = normalizeCaptureRange({ start: 0, end: state.videoDuration }, state.videoDuration);
